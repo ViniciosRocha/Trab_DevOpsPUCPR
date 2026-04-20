@@ -74,3 +74,4 @@ if __name__ == "__main__":
         if continuar.lower() != 's':
             print("\nEncerrando programa...")
             break
+# Versao com CI/CD configurado

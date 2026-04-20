@@ -1,0 +1,29 @@
+name: CD - Simulacao de Deploy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    types: [closed]
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Verificar codigo do repositorio
+      uses: actions/checkout@v4
+    
+    - name: Simular deploy da aplicacao
+      run: |
+        echo "Realizando deploy do Validador de CPF..."
+        echo "Deploy concluido com sucesso em $(date)" > deploy-status.txt
+        cat deploy-status.txt
+    
+    - name: Criar artefato de deploy
+      uses: actions/upload-artifact@v4
+      with:
+        name: deploy-status
+        path: deploy-status.txt

@@ -49,3 +49,4 @@ text
 5. Role para baixo
 6. Escreva a mensagem: `docs: atualiza README com documentacao do validador de CPF`
 7. Clique em "Commit changes"
+Teste de notificação Discord - Semana 6

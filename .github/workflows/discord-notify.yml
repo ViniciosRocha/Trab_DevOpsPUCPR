@@ -1,0 +1,56 @@
+name: Discord Notifications
+
+on:
+  # Alerta a cada push no main
+  push:
+    branches:
+      - main
+  # Alerta quando uma PR é aberta ou merged
+  pull_request:
+    types: [opened, closed]
+
+jobs:
+  notify-discord:
+    runs-on: ubuntu-latest
+    steps:
+      # Notificação de push no main
+      - name: Push to Main
+        if: github.event_name == 'push'
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d '{
+                 "content": "🚀 **Novo commit no MAIN!**\n📦 Repositório: ${{ github.repository }}\n👤 Autor: ${{ github.actor }}\n📝 Commit: ${{ github.event.head_commit.message }}\n🔗 Link: https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+               }' \
+               $DISCORD_WEBHOOK
+
+      # Notificação de PR aberta
+      - name: Pull Request Opened
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d '{
+                 "content": "🔄 **Nova Pull Request criada!**\n📌 Título: ${{ github.event.pull_request.title }}\n👤 Autor: ${{ github.event.pull_request.user.login }}\n🔗 Link: ${{ github.event.pull_request.html_url }}"
+               }' \
+               $DISCORD_WEBHOOK
+
+      # Notificação de PR merged/fechada
+      - name: Pull Request Merged/Closed
+        if: github.event_name == 'pull_request' && github.event.action == 'closed'
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          if [ "${{ github.event.pull_request.merged }}" == "true" ]; then
+            STATUS="✅ **MERGE concluído!**"
+          else
+            STATUS="❌ **PR fechada sem merge**"
+          fi
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d '{"content": "'"$STATUS"'\n📌 Título: ${{ github.event.pull_request.title }}\n👤 Autor: ${{ github.event.pull_request.user.login }}\n🔗 Link: ${{ github.event.pull_request.html_url }}"}' \
+               $DISCORD_WEBHOOK

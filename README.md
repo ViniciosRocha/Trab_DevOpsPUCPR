@@ -52,3 +52,4 @@ text
 Teste de notificação Discord - Semana 6
 Teste 2
 Teste3
+Testes automatizados rodam em cada Pull Request.

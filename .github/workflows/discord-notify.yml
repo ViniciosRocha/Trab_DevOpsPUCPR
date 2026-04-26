@@ -14,7 +14,7 @@ jobs:
       - name: Push to Main
         if: github.event_name == 'push'
         env:
-          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_URL }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           curl -H "Content-Type: application/json" \
                -X POST \
@@ -26,7 +26,7 @@ jobs:
       - name: Pull Request Opened
         if: github.event_name == 'pull_request' && github.event.action == 'opened'
         env:
-          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_URL }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           curl -H "Content-Type: application/json" \
                -X POST \
@@ -38,7 +38,7 @@ jobs:
       - name: Pull Request Merged/Closed
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
         env:
-          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_URL }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           if [ "${{ github.event.pull_request.merged }}" == "true" ]; then
             STATUS="✅ **MERGE concluído!**"
